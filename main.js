@@ -32,10 +32,6 @@ function createWindow() {
   // Enable dragging for title bar
   mainWindow.setMovable(true);
 
-  // Open DevTools in development
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
 
   // Open external links in default browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
