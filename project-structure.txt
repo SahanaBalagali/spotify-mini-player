@@ -1,0 +1,23 @@
+spotify-miniplayer/
+├── package.json
+├── main.js (Electron main process)
+├── src/
+│   ├── index.html
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   ├── app.js (Main application logic)
+│   │   ├── spotify-auth.js (Spotify authentication)
+│   │   ├── spotify-api.js (Spotify Web API wrapper)
+│   │   └── player.js (Player controls and state)
+│   └── assets/
+│       └── icons/
+│           ├── play.svg
+│           ├── pause.svg
+│           ├── next.svg
+│           ├── previous.svg
+│           ├── shuffle.svg
+│           ├── repeat.svg
+│           └── heart.svg
+├── callback.html (OAuth callback page)
+└── README.md

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Authentication</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1db954 0%, #191414 100%);
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #1db954;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin: 0;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        .success {
+            color: #1db954;
+        }
+        
+        .error {
+            color: #e22134;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1 id="status">Authenticating with Spotify...</h1>
+        <p id="message">Please wait while we complete the authentication process.</p>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                code: params.get('code'),
+                state: params.get('state'),
+                error: params.get('error')
+            };
+        }
+
+        // Update UI based on authentication result
+        function updateUI(success, title, message) {
+            const spinner = document.querySelector('.spinner');
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            
+            spinner.style.display = 'none';
+            statusEl.textContent = title;
+            statusEl.className = success ? 'success' : 'error';
+            messageEl.textContent = message;
+        }
+
+        // Handle the authentication callback
+        function handleCallback() {
+            const params = getUrlParams();
+            
+            if (params.error) {
+                updateUI(false, 'Authentication Failed', 
+                    `Error: ${params.error}. Please try again.`);
+                return;
+            }
+            
+            if (params.code && params.state) {
+                // Send the authorization code back to the main process
+                if (window.electronAPI && window.electronAPI.handleAuthCallback) {
+                    window.electronAPI.handleAuthCallback(params.code, params.state);
+                    updateUI(true, 'Authentication Successful!', 
+                        'You can now close this window and return to the application.');
+                } else {
+                    // Fallback for non-Electron environments or if electronAPI is not available
+                    // Store the code temporarily for the main app to retrieve
+                    sessionStorage.setItem('spotify_auth_code', params.code);
+                    sessionStorage.setItem('spotify_auth_state', params.state);
+                    
+                    updateUI(true, 'Authentication Successful!', 
+                        'Authorization received. This window will close automatically.');
+                    
+                    // Close the window after a short delay
+                    setTimeout(() => {
+                        if (window.opener) {
+                            window.opener.postMessage({
+                                type: 'SPOTIFY_AUTH_SUCCESS',
+                                code: params.code,
+                                state: params.state
+                            }, '*');
+                        }
+                        window.close();
+                    }, 2000);
+                }
+            } else {
+                updateUI(false, 'Authentication Failed', 
+                    'No authorization code received. Please try again.');
+            }
+        }
+
+        // Run the callback handler when the page loads
+        document.addEventListener('DOMContentLoaded', handleCallback);
+        
+        // Also handle it immediately in case DOMContentLoaded has already fired
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', handleCallback);
+        } else {
+            handleCallback();
+        }
+    </script>
+</body>
+</html>

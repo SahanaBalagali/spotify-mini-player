@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Miniplayer 💖</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="miniplayer" id="miniplayer">
+        <!-- Title Bar -->
+        <div class="title-bar" id="titleBar">
+            <div class="title-left">
+                <span class="app-title">💖 Spotify Mini</span>
+            </div>
+            <div class="window-controls">
+                <button class="control-btn" id="alwaysOnTopBtn" title="Toggle Always On Top">📌</button>
+                <button class="control-btn" id="minimizeBtn" title="Minimize">−</button>
+                <button class="control-btn close" id="closeBtn" title="Close">×</button>
+            </div>
+        </div>
+
+        <!-- Authentication Screen -->
+        <div class="auth-screen" id="authScreen">
+            <div class="auth-content">
+                <div class="spotify-logo">🎵</div>
+                <h3>Connect to Spotify</h3>
+                <button class="connect-btn" id="connectBtn" onclick="console.log('🖱️ Button clicked via onclick!')">
+                    <span>✨ Connect Now</span>
+                </button>
+                <div class="manual-url" id="manualUrl" style="display: none;">
+                    <p style="font-size: 11px; margin-top: 12px; opacity: 0.8;">Browser didn't open? Copy this URL:</p>
+                    <div style="background: rgba(255,255,255,0.1); padding: 8px; border-radius: 4px; margin-top: 6px; font-size: 10px; word-break: break-all; max-height: 60px; overflow-y: auto; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);" 
+                         id="manualUrlBox" 
+                         title="Click to copy">
+                        <span id="manualUrlText"></span>
+                    </div>
+                    <p style="font-size: 10px; margin-top: 4px; opacity: 0.6;">👆 Click to copy</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Player -->
+        <div class="player-content" id="playerContent" style="display: none;">
+            <!-- Album Art Area - Main hover area for Spotify-style behavior -->
+            <div class="album-art-area" id="albumArtArea">
+                <!-- Album Art Background -->
+                <img id="albumArt" class="album-art-background" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iI2ZmOWE5ZSIvPgo8cGF0aCBkPSJNMjAgMTBDMjUuNTIyOCAxMCAzMCAxNC40NzcyIDMwIDIwQzMwIDI1LjUyMjggMjUuNTIyOCAzMCAyMCAzMEMxNC40NzcyIDMwIDEwIDI1LjUyMjggMTAgMjBDMTAgMTQuNDc3MiAxNC40NzcyIDEwIDIwIDEwWiIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMiIgeT0iMTIiPgo8cGF0aCBkPSJNOCAyTDYuNSA1SDNMNS41IDcuNUw0IDExTDggOUwxMiAxMUwxMC41IDcuNUwxMyA1SDkuNUw4IDJaIiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo8L3N2Zz4K" alt="Album Art">
+                
+                <!-- Controls Overlay (Shows on hover) -->
+                <div class="controls-overlay" id="controlsOverlay">
+                    <!-- Player Controls -->
+                    <div class="player-controls">
+                        <button class="control-button" id="shuffleBtn" title="Shuffle">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-button" id="prevBtn" title="Previous">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="m6.271 5.055.52.383L8 6.903v2.194l-1.209 1.465-.52.383a.5.5 0 0 1-.79-.407V5.462a.5.5 0 0 1 .79-.407zM10.271 5.055l.52.383L12 6.903v2.194l-1.209 1.465-.52.383a.5.5 0 0 1-.79-.407V5.462a.5.5 0 0 1 .79-.407z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-button play-pause" id="playPauseBtn" title="Play/Pause">
+                            <svg class="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5,3 19,12 5,21"/>
+                            </svg>
+                            <svg class="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                                <rect x="6" y="4" width="4" height="16"/>
+                                <rect x="14" y="4" width="4" height="16"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-button" id="nextBtn" title="Next">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="m9.729 5.055-.52.383L8 6.903v2.194l1.209 1.465.52.383a.5.5 0 0 0 .79-.407V5.462a.5.5 0 0 0-.79-.407zM5.729 5.055l-.52.383L4 6.903v2.194l1.209 1.465.52.383a.5.5 0 0 0 .79-.407V5.462a.5.5 0 0 0-.79-.407z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-button" id="repeatBtn" title="Repeat">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.12.12 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-time">
+                            <span id="currentTime">0:00</span>
+                            <span id="totalTime">0:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track Info Bar - ALWAYS VISIBLE -->
+            <div class="track-info-bar">
+                <div class="track-info">
+                    <div class="track-name" id="trackName">Not playing</div>
+                    <div class="artist-name" id="artistName">Connect to Spotify</div>
+                </div>
+                <button class="heart-btn" id="heartBtn" title="Add to Liked Songs">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="m8 2.3362-.717-.737c-1.4-.45-2.5.537-2.5 2.131-.311 3.324 3.217 5.776 3.217 5.776s3.529-2.452 3.217-5.776c0-1.594-1.1-2.582-2.5-2.131z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load scripts in order -->
+    <script>
+        // Test basic JavaScript execution
+        console.log('🚀 HTML loaded, scripts starting...');
+        
+        // Import required Node.js modules for Electron
+        try {
+            const { ipcRenderer } = require('electron');
+            console.log('✅ Electron modules loaded successfully');
+        } catch (error) {
+            console.error('❌ Failed to load Electron modules:', error);
+        }
+    </script>
+    
+    <script>
+        console.log('📁 Loading spotify-auth.js...');
+    </script>
+    <script src="js/spotify-auth.js"></script>
+    
+    <script>
+        console.log('📁 Loading spotify-api.js...');
+    </script>
+    <script src="js/spotify-api.js"></script>
+    
+    <script>
+        console.log('📁 Loading player.js...');
+    </script>
+    <script src="js/player.js"></script>
+    
+    <script>
+        console.log('📁 Loading app.js...');
+    </script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Test if scripts loaded
+        console.log('🔍 Checking if classes are available:');
+        console.log('SpotifyAuth:', typeof SpotifyAuth);
+        console.log('SpotifyAPI:', typeof SpotifyAPI);
+        console.log('PlayerController:', typeof PlayerController);
+        console.log('SpotifyMiniplayer:', typeof SpotifyMiniplayer);
+        
+        // Try to manually initialize if needed
+        if (typeof SpotifyMiniplayer === 'undefined') {
+            console.error('❌ SpotifyMiniplayer class not found - app.js failed to load');
+        }
+    </script>
+</body>
+</html>

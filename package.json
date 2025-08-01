@@ -1,0 +1,52 @@
+{
+  "name": "spotify-miniplayer-pink",
+  "version": "1.0.0",
+  "description": "A cute pink-themed Spotify miniplayer clone built with Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "dev:win": "set NODE_ENV=development && electron .",
+    "dev:unix": "NODE_ENV=development electron ."
+  },
+  "keywords": [
+    "spotify",
+    "miniplayer",
+    "electron",
+    "music",
+    "pink"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "build": {
+    "appId": "com.yourname.spotify-miniplayer",
+    "productName": "Spotify Miniplayer Pink",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "src/**/*",
+      "callback.html",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.music"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
